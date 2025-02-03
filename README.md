@@ -8,7 +8,11 @@ Please record the video by rotating the yourself slowly and keeping the camera s
 ## Data Preprocessing 
 ###### conda activate data_preprocess
 ###### cd preprocess/
-###### run.py --root_path {ROOT_PATH} --gender {GENDER}
+###### python run.py --root_path {ROOT_PATH} --gender {GENDER}
 ## Avatar Training 
-
+###### conda activate avatar_training
+###### cd  avatar_training/
+###### python main.py --base=./configs/gaussians_docker_custom.yaml
 ## Results
+The visual results will be available in Results/SubjectID. 
+The 
