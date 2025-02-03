@@ -17,4 +17,5 @@ For capturing SMPLX parameters from video frames, please run our preprocssing us
 ###### cd  avatar_training/
 ###### python main.py --base=./configs/gaussians_docker_custom.yaml
 ## Results
-The visual results will be available in Results/SubjectID. Please move state.json and avatar.ply to training_asserts/ in Unity Editor package.
+The visual results will be available in Results/SubjectID. 
+To visualize the avatar and animate it, please move state.json and avatar.ply to training_asserts/ in Unity Editor package.
