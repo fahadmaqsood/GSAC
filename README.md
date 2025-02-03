@@ -5,8 +5,9 @@ This repo releases our end-to-end pipeline for gaussian splatting avatar creatio
 customized preprocessing, enabling detailed facial expression reconstruction and seamless integration with Unity-based VR/AR platforms. Additionally, we present a Unity-integrated Gaussian
 Splatting Avatar Editor, offering a user-friendly environment for VR/AR application development. 
 ## Install
-########  git clone --recursive https://github.com/VU-RASL/GSAC.git
-
+~~~
+git clone --recursive https://github.com/VU-RASL/GSAC.git
+~~~
 
 ## Data Gathering 
 Please record the video by rotating the yourself slowly and keeping the camera stable. The time would be about 20 secs. Please make sure there is only one human inside a video each of the time.
