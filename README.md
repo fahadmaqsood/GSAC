@@ -1,7 +1,11 @@
 # GSAC: Leveraging Gaussian Splatting for Photorealistic Avatar Creation with Unity Integration
 Gaussian Splatting Avatar Creation Release 
 
-This repo releases our end-to-end pipeline for gaussian splatting avatar creation for a monocular video in ~ 40 mins. We also provide the Unity Editor for VR/AR application design using trained avatar.
+This repo releases our end-to-end pipeline for gaussian splatting avatar creation for a monocular video in ~ 40 mins. Our pipeline incorporates a novel Gaussian splatting technique with
+customized preprocessing, enabling detailed facial expression reconstruction and seamless integra-
+tion with Unity-based VR/AR platforms. Additionally, we present a Unity-integrated Gaussian
+Splatting Avatar Editor, offering a user-friendly environment for VR/AR application develop-
+ment. 
 ## Install
 
 ## Data Gathering 
