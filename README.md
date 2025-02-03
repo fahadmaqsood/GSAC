@@ -16,6 +16,7 @@ We recommand use docker image.
 ## Data Gathering 
 Please record the video by rotating the yourself slowly and keeping the camera stable. The time would be about 20 secs. Please make sure there is only one human inside a video each of the time.
 Place the recorded video under 
+~~~
 ```mermaid
 graph TD;
     A[Array] -->|Index 0| B[10];
@@ -23,7 +24,7 @@ graph TD;
     A -->|Index 2| D[30];
     A -->|Index 3| E[40];
     A -->|Index 4| F[50];
-
+~~~
 ## Simplest Run
 We provide a docker image that you can easily run the pipeline end-to-end easily.
 ~~~
