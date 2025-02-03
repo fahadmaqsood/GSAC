@@ -8,10 +8,11 @@ This repo releases the codes for our avatar creating for a monocular video in ~ 
 Please record the video by rotating the yourself slowly and keeping the camera stable. The time would be about 20 secs. Please make sure there is only one human inside a video each of the time.
 
 ## Data Preprocessing 
-For capturing SMPLX parameters from video frames, please run our preprocssing using commands below:
+For capturing SMPLX parameters from video frames, please run our preprocssing using commands below （Note: for infant mode, gender is INFANT）:
 ###### conda activate data_preprocess
 ###### cd preprocess/
 ###### python run.py --root_path {ROOT_PATH} --gender {GENDER}
+
 ## Avatar Training 
 ###### conda activate avatar_training
 ###### cd  avatar_training/
