@@ -1,7 +1,9 @@
 # GSAC
 Gaussian Splatting Avatar Creation Release 
 
-This repo releases the code for our avatar creating by customizing data. 
+This repo releases the codes for our avatar creating for a monocular video in ~ 40 mins. We also provide the Unity Editor for VR/AR application design using trained avatar.
+## Install
+
 ## Data Gathering 
 Please record the video by rotating the yourself slowly and keeping the camera stable. The time would be about 20 secs. Please make sure there is only one human inside a video each of the time.
 
