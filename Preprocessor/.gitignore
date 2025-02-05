@@ -1,0 +1,5 @@
+data/Custom/data/
+common/utils/human_model_files/
+tools/COLMAP/
+tools/Depth-Anything-V2/
+tools/segment-anything/
