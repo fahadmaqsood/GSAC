@@ -5,7 +5,7 @@ Navigate to the Preprocessor folder first:
 cd Preprocessor/
 ~~~
 
-We are using the basic code structure from [ExAvatar](https://github.com/mks0601/ExAvatar_RELEASE/tree/main/fitting), and using models : [DECA](https://github.com/yfeng95/DECA), [Hand4Whole](https://github.com/mks0601/Hand4Whole_RELEASE), [mmpose](https://github.com/open-mmlab/mmpose). We also packaged complied models to a tools folder, which is uploaded on Hugging face https://huggingface.co/RendongZhang/GSAC-Dependencies/tree/main. For each download, run :
+We are using the basic code structure from [ExAvatar](https://github.com/mks0601/ExAvatar_RELEASE/tree/main/fitting), and using models : [DECA](https://github.com/yfeng95/DECA), [Hand4Whole](https://github.com/mks0601/Hand4Whole_RELEASE), [mmpose](https://github.com/open-mmlab/mmpose).  We also packaged complied models to a tools folder, which is uploaded on Hugging face https://huggingface.co/RendongZhang/GSAC-Dependencies/tree/main. You can install them separately, but we recommand download our provided packaged tools. For easy download, run :
 ~~~
 ./download.sh
 ~~~
