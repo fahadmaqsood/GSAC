@@ -1,6 +1,7 @@
 name: textured-avatar
 channels:
   - pytorch
+  - nvidia
   - anaconda
   - conda-forge
   - defaults
@@ -17,38 +18,43 @@ dependencies:
   # - pyrender=0.1.45
   - pyrender
   # - python=3.8.18
-  - python 3.12
+  - python=3.12
+  - pip
   # - tqdm=4.66.1
   - tqdm
   # - trimesh=4.0.4
   - trimesh
   # - pytorch=1.12.1
+  - pytorch=2.5.1
   
   # - torchaudio=0.12.1
+  - torchaudio=2.5.1
   
   # - torchvision=0.13.1
+  - torchvision=0.20.1
   
-  # - pytorch-lightning=1.8.1
+  - pytorch-lightning
+
+  - pytorch-cuda=12.1
   
   - scikit-learn
   - pip:
-      - torch
-      - torch audio
-      - torchvision
-      - --index-url https://download.pytorch.org/whl/cu126
+      # - torch
+      # - torchaudio
+      # - torchvision
       # - imageio==2.32.0
-      - imageio
-      # - lpips==0.1.4
-      - lpips
-      # - opencv-python==4.8.1.78
-      - opencv-python
+      # - imageio
+      # # - lpips==0.1.4
+      # - lpips
+      # # - opencv-python==4.8.1.78
+      # - opencv-python
       # - pyglet
-      - pyglet==1.4.0b1
-      # - pyopengl==3.1.0
-      - pyopengl
-      # - smplx==0.1.28
-      - smplx
-      # - tensorboard==2.14.0
-      - tensorboard
-      - av
-      - transforms3d
+      # # - pyglet==1.4.0b1
+      # # - pyopengl==3.1.0
+      # - pyopengl
+      # # - smplx==0.1.28
+      # - smplx
+      # # - tensorboard==2.14.0
+      # - tensorboard
+      # - av
+      # - transforms3d
