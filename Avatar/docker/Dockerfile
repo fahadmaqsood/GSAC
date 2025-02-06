@@ -1,4 +1,5 @@
-FROM nvidia/cudagl:11.2.2-devel-ubuntu20.04
+# FROM nvidia/cudagl:11.2.2-devel-ubuntu20.04
+FROM nvidia/cuda:12.1.0-devel-ubuntu20.04
 
 ENV TZ=Europe/Moscow
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -112,7 +113,7 @@ RUN pip install --upgrade pip
 RUN pip install imageio imageio-ffmpeg
 
 COPY ../3rd_party/nvdiffrast/nvdiffrast /tmp/nvdiffrast/
-COPY ../3rd_party/nvdiffrast/README.md ../3rd_party/nvdiffrast/setup.py /tmp
+COPY ../3rd_party/nvdiffrast/README.md ../3rd_party/nvdiffrast/setup.py /tmp/
 RUN cd /tmp && pip install .
 
 # docker setup
