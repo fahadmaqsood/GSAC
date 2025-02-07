@@ -21,4 +21,10 @@ wget -O /tmp/tools.tar \
 tar -xf /tmp/tools.tar -C .
 rm /tmp/tools.tar
 
+wget -O /tmp/sapiens.tar \
+    "https://huggingface.co/RendongZhang/GSAC-Dependencies/resolve/main/sapiens.tar"
+tar -xf /tmp/sapiens.tar -C tools/
+rm /tmp/sapiens.tar
+
+
 # echo "Download and setup completed!"
