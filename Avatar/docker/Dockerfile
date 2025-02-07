@@ -1,7 +1,6 @@
-# FROM nvidia/cudagl:11.2.2-devel-ubuntu20.04
-FROM nvidia/cuda:12.1.0-devel-ubuntu20.04
+FROM nvidia/cuda:12.1.0-devel-ubuntu20.04 
 
-ENV TZ=Europe/Moscow
+ENV TZ=America/Chicago
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 SHELL ["/bin/bash", "--login", "-c"]

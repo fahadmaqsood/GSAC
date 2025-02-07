@@ -18,7 +18,7 @@ dependencies:
   # - pyrender=0.1.45
   - pyrender
   # - python=3.8.18
-  - python=3.12
+  - python=3.10
   - pip
   # - tqdm=4.66.1
   - tqdm

@@ -906,27 +906,27 @@ class TextureAndGaussianTrainer(nn.Module):
             self.evaluate(val_dataloader, training_stage)
         self.save_checkpoint(training_stage, self.global_step)
 
-        # Train the texture
-        optimizer = self.configure_optimizers()
-        training_stage = TrainingStage.FINETUNE_TEXTURE
-        self._change_lr(optimizer, training_stage)
-        self.fit_training_stage(
-            optimizer, train_dataloader, val_dataloader, training_stage, self._texture_optimize_steps
-        )
-        if val_dataloader is not None:
-            self.evaluate(val_dataloader, training_stage)
-        self.save_checkpoint(training_stage, self.global_step)
+        # # Train the texture
+        # optimizer = self.configure_optimizers()
+        # training_stage = TrainingStage.FINETUNE_TEXTURE
+        # self._change_lr(optimizer, training_stage)
+        # self.fit_training_stage(
+        #     optimizer, train_dataloader, val_dataloader, training_stage, self._texture_optimize_steps
+        # )
+        # if val_dataloader is not None:
+        #     self.evaluate(val_dataloader, training_stage)
+        # self.save_checkpoint(training_stage, self.global_step)
 
-        # Train the opacity
-        optimizer = self.configure_optimizers()
-        training_stage = TrainingStage.OPTIMIZE_OPACITY
-        self._change_lr(optimizer, training_stage)
-        self.fit_training_stage(
-            optimizer, train_dataloader, val_dataloader, training_stage, self._opacity_optimize_steps
-        )
-        if val_dataloader is not None:
-            self.evaluate(val_dataloader, training_stage)
-        self.save_checkpoint(training_stage, self.global_step)
+        # # Train the opacity
+        # optimizer = self.configure_optimizers()
+        # training_stage = TrainingStage.OPTIMIZE_OPACITY
+        # self._change_lr(optimizer, training_stage)
+        # self.fit_training_stage(
+        #     optimizer, train_dataloader, val_dataloader, training_stage, self._opacity_optimize_steps
+        # )
+        # if val_dataloader is not None:
+        #     self.evaluate(val_dataloader, training_stage)
+        # self.save_checkpoint(training_stage, self.global_step)
         
         #self.save_ply(path = self.save_path_ply,
         #              xyz = self._xyz,
