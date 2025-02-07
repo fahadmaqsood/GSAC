@@ -12,7 +12,7 @@ dependencies:
   - pillow
   - pyrender
   # - python=3.8.18
-  - python=3.12
+  - python=3.10
   - pip
   - tqdm
   - trimesh
