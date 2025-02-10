@@ -5,12 +5,15 @@ This repo releases our end-to-end pipeline for gaussian splatting avatar creatio
 customized preprocessing, enabling detailed facial expression reconstruction and seamless integration with Unity-based VR/AR platforms. Additionally, we present a Unity-integrated Gaussian
 Splatting Avatar Editor, offering a user-friendly environment for VR/AR application development. 
 ## Install
+Clone the repo
 ~~~
-git clone --recursive https://github.com/VU-RASL/GSAC.git
+git clone https://github.com/VU-RASL/GSAC.git
 ~~~
-Alough you can install all dependencies using
+cd to the repo, then run
 ~~~
-pip install -r requirements.txt
+bash Avatar/docker build.sh
+bash Avatar/docker run.sh
+bash Avatar gaussian_install.sh
 ~~~
 We recommand use docker image.
 ## Data Gathering 
@@ -19,29 +22,37 @@ Place the recorded video under inputs folder:
 ~~~
 
 ROOT
-    -->data
-        -->inputs/
-            -->subject_id
-        -->output/
-    -->preprocess
-    -->avatar_training
+    |__Data/
+        |__{SUBJECT}/frames/
+    |__Preprocessor/
+    |__Avatar/
 
 ~~~
 ## Simplest Run
-We provide a docker image that you can easily run the pipeline end-to-end easily.
+We provide a single bash script that you can easily run the pipeline end-to-end easily. After docker is running and the data is pleased in correct place, navigate to ROOT folder of GSAC, run the command below:
 ~~~
-docker build -t GSAC .
-docker run --rm -v /input/path:/app/input -v /output/path:/app/output GSAC python run.py --root_path /app/output
+bash create_avatar.sh {SUBJECT} {GENDER}
 ~~~
 
 
 Othersiwe you can run the preprocessing and training separately.
 ### Data Preprocessing 
-For capturing SMPLX parameters from video frames, please run our preprocssing using commands below （Note: for infant mode, gender is INFANT）:
+For capturing SMPLX parameters from video frames, inside the docker environment we created above, please run our preprocessing using commands below （Note: for infant mode, gender is INFANT）:
 ~~~
-conda activate data_preprocess
-cd preprocess/
-python run.py --root_path {ROOT_PATH} --gender {GENDER}
+cd Preprocessor
+python run.py --root_path {SUBJECT} --gender {GENDER}
+~~~
+The fitted results will be placed in train_data under {Subject} folder :
+~~~
+
+ROOT
+    |__Data/
+        |__{SUBJECT}/
+            |__frames/
+            |__train/
+    |__Preprocessor/
+    |__Avatar/
+
 ~~~
 ### Avatar Training 
 ~~~
