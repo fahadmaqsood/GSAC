@@ -30,9 +30,9 @@ runner:
     prune_step: 201
     prune_stop: 100000
 
-    render_size: 544
+    render_size: 1080
     texture_size: 512
-    smplx_path: /mounted/home/dresden/repositories/HAHA/data
+    smplx_path: /mounted/home/dresden/repositories/GSAC/Preprocessor/common/utils/human_model_files/
     use_pca_for_hands: False
 
     criteria_config:
@@ -82,30 +82,34 @@ runner:
 train_dataloader:
   batch_size: 4
   num_workers: 4
-  target: dataloaders.xhuman_loader.DataLoader
+  target: dataloaders.custom_loader.DataLoader
   params:
     use_hashing: False
-    render_size: 544
+    render_size: 1080
     random_background: True
-    data_root: /mounted/home/dresden/repositories/HAHA/data/00016/train/CustomTake4-1
+    data_root: /mounted/home/dresden/repositories/GSAC/Data/test/train/
 
 val_dataloader:
   batch_size: 4
   num_workers: 4
-  target: dataloaders.xhuman_loader.DataLoader
-  params:
-    render_size: 544
-    data_root: /mounted/home/dresden/repositories/HAHA/data/00016/train/Take6
+  #target: dataloaders.smplx_loader_no_pca.DataLoader
+  target: dataloaders.custom_loader.DataLoader
 
+  params:
+    render_size: 1080
+    #data_root: /mounted/home/dresden/repositories/HAHA/data/PeopleSnapshot_SMPLX/male-3-casual-test
+    data_root: /mounted/home/dresden/repositories/GSAC/Data/test/train/
 test_dataloader:
   batch_size: 1
   num_workers: 4
   target: dataloaders.xhuman_loader.DataLoader
-  params:
-    render_size: 544
-    white_background: True
-    data_root: /mounted/home/dresden/repositories/HAHA/data/00016/test/Take1
+  #target: dataloaders.smplx_loader_no_pca.DataLoader
 
+  params:
+    render_size: 1080
+    white_background: False
+    data_root: /mounted/home/dresden/repositories/GSAC/Data/test/train/
+    #data_root: /mounted/home/dresden/repositories/HAHA/data/PeopleSnapshot_SMPLX/male-3-casual-test
 callbacks:
   image_logger:
     target: callbacks.image_logger.ImageLogger

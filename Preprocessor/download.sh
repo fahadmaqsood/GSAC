@@ -27,4 +27,36 @@ tar -xf /tmp/sapiens.tar -C tools/
 rm /tmp/sapiens.tar
 
 
+# Get the installation path of torchgeometry
+TORCHGEOMETRY_PATH=$(pip show torchgeometry | grep Location | awk '{print $2}')
+
+# Ensure torchgeometry is installed
+if [ -z "$TORCHGEOMETRY_PATH" ]; then
+    echo "Error: torchgeometry is not installed!"
+    exit 1
+fi
+
+# Define the target directory
+TARGET_DIR="${TORCHGEOMETRY_PATH}/torchgeometry/core/"
+
+# Ensure the target directory exists
+if [ ! -d "$TARGET_DIR" ]; then
+    echo "Error: Target directory $TARGET_DIR does not exist!"
+    exit 1
+fi
+
+# Copy file1.py to the target directory
+cp -r file1.py "$TARGET_DIR"
+
+
+
+
+
+
+
+
+
+
+
+
 # echo "Download and setup completed!"

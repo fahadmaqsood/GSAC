@@ -1,4 +1,4 @@
-name: textured-avatar
+name: gsac
 channels:
   - pytorch
   - nvidia
@@ -11,7 +11,7 @@ dependencies:
   - omegaconf
   - pillow
   - pyrender
-  # - python=3.8.18
+
   - python=3.10
   - pip
   - tqdm
@@ -22,27 +22,3 @@ dependencies:
   - pytorch-lightning
   - pytorch-cuda=12.1
   - scikit-learn
-  - json_tricks
-  - mmpose
-
-  - mmcv>=2.0.0,<2.2.0
-  - mmdet>=3.0.0,<3.3.0
-  - mmengine>=0.4.0,<1.0.0
-
-  - yacs
-  - kornia
-  - scikit-image>=0.15
-  - face-alignment
-
-  - pyyaml
-  - mxnet-mkl==1.6.0 
-  - numpy==1.23.1
-  - numba==0.57.1
-
-  - tensorboard
-  - opencv-python
-  - smplx
-  - plyfile
-  - lpips
-  - av
-  - torchgeometry
