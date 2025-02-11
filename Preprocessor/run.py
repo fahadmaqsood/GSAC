@@ -139,6 +139,9 @@ print("✅ All binary masks converted successfully!")
 source_folder = os.path.join(root_path, "train/")
 target_folder = os.path.join(gsac_path, "Data", subject_id)
 
+target_train_folder = target_folder +'/train/'
+if os.path.exists(target_train_folder ):
+    shutil.rmtree(target_train_folder ) 
 # Ensure the target parent directory exists
 os.makedirs(os.path.dirname(target_folder), exist_ok=True)
 

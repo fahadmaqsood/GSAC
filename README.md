@@ -60,6 +60,17 @@ After correctly downloading tools and setting up environment and data, you would
 cd Avatar/
 python main.py --base=./configs/gaussians_docker_custom.yaml  --gender {GENDER} --train_subject {SUBJECT}
 ~~~
+The training logs and results will be saved in {SUBJECT}_{START_TIME}
+~~~
+
+ROOT
+    |__Data/
+    |__Preprocessor/
+    |__Avatar/
+        |__logs/GSAC_custom/
+            |__{SUBJECT}_{START_TIME}
+
+~~~
 ## Results
 The visual results will be available in Results/SubjectID. 
 To visualize the avatar and animate it, please move state.json and avatar.ply to training_asserts/ in Unity Editor package.
