@@ -86,5 +86,6 @@ ROOT
 
 ~~~
 ## Results
-The visual results will be available in Results/SubjectID. 
-To visualize the avatar and animate it, please move state.json and avatar.ply to training_asserts/ in Unity Editor package.
+The visual results will be available in Data/{SUBJECT}/Result/.
+
+To visualize the avatar and animate it, please move state_dict.json and avatar.ply to training_asserts/ in Unity Editor package.
