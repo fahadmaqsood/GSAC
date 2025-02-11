@@ -31,9 +31,23 @@ ROOT
 ## Simplest Run
 We provide a single bash script that you can easily run the pipeline end-to-end easily. After docker is running and the data is pleased in correct place, navigate to ROOT folder of GSAC, run the command below:
 ~~~
-bash create_avatar.sh {SUBJECT} {GENDER}
+
+python create_avatar.py --subject {SUBJECT} --gender {GENDER}
+
+~~~
+Results will be saved in {SUBJECT} folder under Data/
 ~~~
 
+ROOT
+    |__Data/
+        |__{SUBJECT}
+        |________frames/
+        |________train/
+        |________Result/
+    |__Preprocessor/
+    |__Avatar/
+
+~~~
 
 Othersiwe you can run the preprocessing and training separately.
 ### Data Preprocessing 
