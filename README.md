@@ -55,10 +55,10 @@ ROOT
 
 ~~~
 ### Avatar Training 
+After correctly downloading tools and setting up environment and data, you would be able to train the gaussian avatar using the following command in GSAC folder :
 ~~~
-conda activate avatar_training
-cd  avatar_training/
-python main.py --base=./configs/gaussians_docker_custom.yaml
+cd Avatar/
+python main.py --base=./configs/gaussians_docker_custom.yaml  --gender {GENDER} --train_subject {SUBJECT}
 ~~~
 ## Results
 The visual results will be available in Results/SubjectID. 

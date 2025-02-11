@@ -32,6 +32,16 @@ def get_parser(**parser_kwargs):
         default=list(),
     )
     parser.add_argument(
+        "-g",
+        "--gender",
+        default='male',
+    )
+    parser.add_argument(
+        "--train_subject",
+        default='',
+    )
+
+    parser.add_argument(
         "-t",
         "--test_mode",
         action='store_true',
@@ -116,14 +126,25 @@ def main(args):
     parser = get_parser()
 
     opt, unknown = parser.parse_known_args(args)
-
+    
     configs = [OmegaConf.load(cfg) for cfg in opt.base]
+
     cli = OmegaConf.from_dotlist(unknown)
     config = OmegaConf.merge(*configs, cli)
+    print(os.getcwd())
+    gasc_path = os.path.dirname(os.getcwd())
+    print(gasc_path)
+    config.runner.params.gender = opt.gender
+    if opt.train_subject != '' :
+        train_path = gasc_path + '/Data/' + opt.train_subject + '/train/'
+        config.train_dataloader.params.data_root = train_path
+        config.val_dataloader.params.data_root = train_path
+
+    model_path = gasc_path + '/Preprocessor/common/utils/human_model_files/'
+    config.runner.params.smplx_path = model_path
 
     runner = instantiate_from_config(config.runner)
     runner.to(runner.device)
-
     setup_callbacks(runner, config)
 
     if opt.pretrained:
