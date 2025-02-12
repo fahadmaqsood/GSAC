@@ -18,8 +18,18 @@ bash Avatar gaussian_install.sh
 ~~~
 We recommand use docker image.
 ## Data Gathering 
-Please record the video by rotating the yourself slowly and keeping the camera stable. The time would be about 20 secs. Please make sure there is only one human inside a video each of the time.
+Please record the video using your phone by rotating the yourself slowly and keeping the camera stable. The time would be about 20 secs. Please make sure there is only one human inside a video each of the time. 
 Place the recorded video under inputs folder:
+~~~
+
+ROOT
+    |__Data/
+        |__{SUBJECT}/video.MOV
+    |__Preprocessor/
+    |__Avatar/
+
+~~~
+Or you can place the extracted frames you want to use from the video in the folder:
 ~~~
 
 ROOT
