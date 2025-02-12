@@ -61,7 +61,6 @@ print( "#############################################")
 ############################################# Move result to correct place #########################################
 
 # MV the latest result to Data/Subject
-os.chdir('Avatar/')
 
 
 log_dir = os.getcwd()+ "/logs/GSAC_custom/"
