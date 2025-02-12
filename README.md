@@ -1,7 +1,7 @@
 # GSAC: Leveraging Gaussian Splatting for Photorealistic Avatar Creation with Unity Integration
 Gaussian Splatting Avatar Creation Release 
 
-This repo releases our end-to-end pipeline for gaussian splatting avatar creation for a monocular video in ~ 40 mins. Our pipeline incorporates a novel Gaussian splatting technique with
+This is official code release for GSAC: Leveraging Gaussian Splatting for Photorealistic Avatar Creation with Unity Integration. This repo releases our end-to-end pipeline for gaussian splatting avatar creation for a monocular video in ~ 40 mins. Our pipeline incorporates a novel Gaussian splatting technique with
 customized preprocessing, enabling detailed facial expression reconstruction and seamless integration with Unity-based VR/AR platforms. Additionally, we present a Unity-integrated Gaussian
 Splatting Avatar Editor, offering a user-friendly environment for VR/AR application development. 
 ## Install
@@ -49,7 +49,7 @@ ROOT
 
 ~~~
 
-Othersiwe you can run the preprocessing and training separately.
+Otherwise you can run the preprocessing and training separately.
 ### Data Preprocessing 
 For capturing SMPLX parameters from video frames, inside the docker environment we created above, please run our preprocessing using commands below （Note: for infant mode, gender is INFANT）:
 ~~~
