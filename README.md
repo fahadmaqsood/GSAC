@@ -13,6 +13,7 @@ cd to the repo, then run
 ~~~
 bash Avatar/docker build.sh
 bash Avatar/docker run.sh
+cd {ROOT}/GSAC
 bash Avatar gaussian_install.sh
 ~~~
 We recommand use docker image.
