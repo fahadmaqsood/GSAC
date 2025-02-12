@@ -55,9 +55,10 @@ ROOT
     |__Avatar/
 
 ~~~
+-------------------------------------------------------------------------------------------------------------------------------------
 
 Otherwise you can run the preprocessing and training separately.
-### Data Preprocessing 
+## Data Preprocessing 
 For capturing SMPLX parameters from video frames, inside the docker environment we created above, please run our preprocessing using commands below （Note: for infant mode, gender is INFANT）:
 ~~~
 cd Preprocessor
@@ -75,7 +76,7 @@ ROOT
     |__Avatar/
 
 ~~~
-### Avatar Training 
+## Avatar Training 
 After correctly downloading tools and setting up environment and data, you would be able to train the gaussian avatar using the following command in GSAC folder :
 ~~~
 cd Avatar/
@@ -92,6 +93,9 @@ ROOT
             |__{SUBJECT}_{START_TIME}
 
 ~~~
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
 ## Results
 The visual results will be available in Data/{SUBJECT}/Result/.
 
