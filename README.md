@@ -29,12 +29,18 @@ ROOT
 
 ~~~
 ## Simplest Run
-We provide a single bash script that you can easily run the pipeline end-to-end easily. After docker is running and the data is pleased in correct place, navigate to ROOT folder of GSAC, run the command below:
+We provide a single bash script that you can easily run the pipeline end-to-end easily. If can not only create avatar from video input, but also can create from sliced frames from video. After docker is running and the data is pleased in correct place, navigate to ROOT folder of GSAC, run the command below:
 ~~~
 
-python create_avatar.py --subject {SUBJECT} --gender {GENDER}
+python create_avatar.py --subject {SUBJECT} --gender {GENDER}  --start {video or image}
 
 ~~~
+{SUBJECT} is the name of the folder of you data. {GENDER} is the gender of the recorded person.  
+
+--start is optional. If you wish to create an avatar from a ~20 seconds video,   use  --start video  
+Otherwise, leave it as blank.
+
+
 Results will be saved in {SUBJECT} folder under Data/
 ~~~
 
