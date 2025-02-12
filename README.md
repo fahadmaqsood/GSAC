@@ -72,7 +72,7 @@ ROOT
 After correctly downloading tools and setting up environment and data, you would be able to train the gaussian avatar using the following command in GSAC folder :
 ~~~
 cd Avatar/
-python main.py --base=./configs/gaussians_docker_custom.yaml  --gender {GENDER} --train_subject {SUBJECT}
+python main.py --base=./configs/GSAC_custom.yaml  --gender {GENDER} --train_subject {SUBJECT}
 ~~~
 The training logs and results will be saved in {SUBJECT}_{START_TIME}
 ~~~
