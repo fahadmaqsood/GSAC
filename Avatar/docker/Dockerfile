@@ -41,12 +41,12 @@ RUN apt-get update && apt-get install -y \
     libegl1-mesa-dev \
     libgles2-mesa-dev
 
-ENV LD_LIBRARY_PATH /usr/lib64:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH
 
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,graphics
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
 
-ENV PYOPENGL_PLATFORM egl
+ENV PYOPENGL_PLATFORM=egl
 
 RUN ls /usr/share/glvnd/egl_vendor.d/
 
@@ -95,12 +95,11 @@ RUN echo 112
 COPY docker/environment.yml /home/$USERNAME/environment.yml
 RUN conda env create -f /home/$USERNAME/environment.yml
 
-RUN echo "source activate textured-avatar" > ~/.bashrc
-ENV PATH /opt/conda/envs/textured-avatar/bin:$PATH
+RUN echo "source activate gsac" > ~/.bashrc
+ENV PATH=/opt/conda/envs/gsac/bin:$PATH
 
 RUN conda info --envs
 
-RUN echo 1
 RUN pip install git+https://github.com/karfly/nvdiffrast_compute-capability_6.0
 RUN pip install git+https://github.com/DmitryUlyanov/yamlenv.git
 RUN pip install git+https://github.com/nghorbani/human_body_prior.git
@@ -115,8 +114,14 @@ COPY ../3rd_party/nvdiffrast/nvdiffrast /tmp/nvdiffrast/
 COPY ../3rd_party/nvdiffrast/README.md ../3rd_party/nvdiffrast/setup.py /tmp/
 RUN cd /tmp && pip install .
 
-RUN pip install -r extra_require.txt
+COPY docker/extra_require.txt /tmp/extra_require.txt
+RUN pip install -r /tmp/extra_require.txt
 # docker setup
-WORKDIR /
+RUN mkdir gsac
+WORKDIR /gsac
 ENTRYPOINT ["fixuid", "-q"]
+# ENTRYPOINT ["/bin/bash", "-c","source /home/user/miniconda/etc/profile.d/conda.sh && conda activate gsac && exec bash"]
+# ENTRYPOINT ["/bin/bash", "-c","source activate gsac && exec bash"]
+# ENTRYPOINT ["source", "activate", "gsac"]
 CMD ["fixuid", "-q", "bash"]
+# CMD ["bash"]
