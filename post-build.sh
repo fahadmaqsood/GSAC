@@ -50,6 +50,3 @@ if [ ! -d "$TARGET_DIR" ]; then
     echo "Error: Target directory $TARGET_DIR does not exist!"
     exit 1
 fi
-
-# Copy file1.py to the target directory
-cp -r file1.py "$TARGET_DIR"
