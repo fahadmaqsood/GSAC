@@ -14,6 +14,7 @@ cd to the repo, then run
 bash Avatar/docker build.sh
 bash Avatar/docker run.sh
 bash post-build.sh
+pip install -r Avatar/docker/extra_require.txt
 ~~~
 We recommand use docker image.
 ## Data Gathering 
