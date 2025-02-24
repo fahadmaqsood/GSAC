@@ -103,6 +103,8 @@ if args.start =='video':
 ########################################### Preprocessor #####################################
 
 subject_path = os.getcwd()+'/Data/'+subject_id + '/frames/'
+print(subject_path)
+print('ttttttttttt')
 os.chdir('Preprocessor')
 
 cmd = ' python run.py --root_path ' + subject_id+" "  + " --gender "+ gender
@@ -114,7 +116,7 @@ print( "          Preprocessor Job Done.")
 print( " ")
 print( "#############################################")
 
-############################################# Avatar #########################################
+# ############################################# Avatar #########################################
 
 os.chdir('../Avatar')
 
