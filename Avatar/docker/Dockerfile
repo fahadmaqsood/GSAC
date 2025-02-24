@@ -41,12 +41,12 @@ RUN apt-get update && apt-get install -y \
     libegl1-mesa-dev \
     libgles2-mesa-dev
 
-ENV LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH /usr/lib64:$LD_LIBRARY_PATH
 
-ENV NVIDIA_VISIBLE_DEVICES=all
-ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,graphics
 
-ENV PYOPENGL_PLATFORM=egl
+ENV PYOPENGL_PLATFORM egl
 
 RUN ls /usr/share/glvnd/egl_vendor.d/
 
@@ -62,18 +62,36 @@ RUN mkdir -p /tmp && \
 
 # fixuid
 ARG USERNAME=user
+
+
+
+
+
+# RUN apt-get update && apt-get install -y sudo curl && \
+#     addgroup --gid 1000 $USERNAME && \
+#     adduser --uid 1000 --gid 1000 --disabled-password --gecos '' $USERNAME && \
+#     adduser $USERNAME sudo && \
+#     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
+#     USER=$USERNAME && \
+#     GROUP=$USERNAME && \
+#     curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
+#     chown root:root /usr/local/bin/fixuid && \
+#     chmod 4755 /usr/local/bin/fixuid && \
+#     mkdir -p /etc/fixuid && \
+#     printf "user: $USER\ngroup: $GROUP\n" > /etc/fixuid/config.yml
+
 RUN apt-get update && apt-get install -y sudo curl && \
     addgroup --gid 1000 $USERNAME && \
     adduser --uid 1000 --gid 1000 --disabled-password --gecos '' $USERNAME && \
-    adduser $USERNAME sudo && \
-    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
-    USER=$USERNAME && \
-    GROUP=$USERNAME && \
+    echo "$USERNAME:password" | chpasswd && \   
+    usermod -aG sudo $USERNAME && \
+    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
     curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
     chown root:root /usr/local/bin/fixuid && \
     chmod 4755 /usr/local/bin/fixuid && \
     mkdir -p /etc/fixuid && \
-    printf "user: $USER\ngroup: $GROUP\n" > /etc/fixuid/config.yml
+    printf "user: $USERNAME\ngroup: $USERNAME\n" > /etc/fixuid/config.yml 
+
 USER $USERNAME:$USERNAME
 
 # miniconda
@@ -96,10 +114,11 @@ COPY docker/environment.yml /home/$USERNAME/environment.yml
 RUN conda env create -f /home/$USERNAME/environment.yml
 
 RUN echo "source activate gsac" > ~/.bashrc
-ENV PATH=/opt/conda/envs/gsac/bin:$PATH
+ENV PATH /opt/conda/envs/gsac/bin:$PATH
 
 RUN conda info --envs
 
+RUN echo 1
 RUN pip install git+https://github.com/karfly/nvdiffrast_compute-capability_6.0
 RUN pip install git+https://github.com/DmitryUlyanov/yamlenv.git
 RUN pip install git+https://github.com/nghorbani/human_body_prior.git
@@ -114,14 +133,7 @@ COPY ../3rd_party/nvdiffrast/nvdiffrast /tmp/nvdiffrast/
 COPY ../3rd_party/nvdiffrast/README.md ../3rd_party/nvdiffrast/setup.py /tmp/
 RUN cd /tmp && pip install .
 
-COPY docker/extra_require.txt /tmp/extra_require.txt
-RUN pip install -r /tmp/extra_require.txt
 # docker setup
-RUN mkdir gsac
-WORKDIR /gsac
+WORKDIR /
 ENTRYPOINT ["fixuid", "-q"]
-# ENTRYPOINT ["/bin/bash", "-c","source /home/user/miniconda/etc/profile.d/conda.sh && conda activate gsac && exec bash"]
-# ENTRYPOINT ["/bin/bash", "-c","source activate gsac && exec bash"]
-# ENTRYPOINT ["source", "activate", "gsac"]
 CMD ["fixuid", "-q", "bash"]
-# CMD ["bash"]
