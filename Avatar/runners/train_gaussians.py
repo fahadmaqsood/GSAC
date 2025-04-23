@@ -1086,6 +1086,8 @@ class TextureAndGaussianTrainer(nn.Module):
         train_batch = dict2device(train_batch, self.device)
         loss = 0
         self._render_frame(train_batch, training_stage)
+        gt_image =train_batch["rgb_image"]
+        render_image = train_batch["rasterization"]
 
         for criterion_name, criterion in self._criteria.items():
             local_loss = criterion(train_batch, training_stage=training_stage)

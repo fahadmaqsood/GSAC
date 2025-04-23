@@ -18,7 +18,7 @@ runner:
     min_s_value: 0.0
     max_s_value: 0.1
 
-    gaussians_optimize_steps: 5000
+    gaussians_optimize_steps: 3000
     texture_optimize_steps: 2500
     opacity_optimize_steps: 5000
 

@@ -116,9 +116,10 @@ print( "          Preprocessor Job Done.")
 print( " ")
 print( "#############################################")
 
-# ############################################# Avatar #########################################
+############################################# Avatar #########################################
 
 os.chdir('../Avatar')
+# os.chdir('Avatar')
 
 cmd = ' python main.py --base=./configs/GSAC_custom.yaml  --gender ' +  gender + ' ' +  '--train_subject ' + subject_id
 

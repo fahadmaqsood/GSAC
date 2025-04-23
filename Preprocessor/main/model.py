@@ -178,7 +178,7 @@ class Model(nn.Module):
         pose = torch.cat((flame_param['neck_pose'][:,None,:], flame_param['jaw_pose'][:,None,:], flame_param['leye_pose'][:,None,:], flame_param['reye_pose'][:,None,:]),1) # follow flame.joint['name'] without the root joint
         return pose
    
-    def forward(self, smplx_inputs, flame_inputs, data, return_output):
+    def forward(self, prev_frame_smplx_inputs,smplx_inputs, flame_inputs, data, return_output):
         smplx_inputs = self.process_input_smplx_param(smplx_inputs) 
         flame_inputs = self.process_input_flame_param(flame_inputs) 
        
@@ -251,6 +251,28 @@ class Model(nn.Module):
             loss['joint_offset_sym_reg'] = self.joint_offset_sym_reg(smplx_inputs['joint_offset'])
             loss['locator_offset_sym_reg'] = self.joint_offset_sym_reg(smplx_inputs['locator_offset'])
         
+
+            # # Define tolerance and weight factor
+            # tolerance = 0.25  
+            # weight = 10.0  # Increase weight to penalize large changes more
+
+            # # Convert previous frame's 6D pose back to axis-angle
+            # prev_frame_smplx_inputs['lhand_pose'] = matrix_to_axis_angle(rotation_6d_to_matrix(prev_frame_smplx_inputs['lhand_pose']))
+            # prev_frame_smplx_inputs['rhand_pose'] = matrix_to_axis_angle(rotation_6d_to_matrix(prev_frame_smplx_inputs['rhand_pose']))
+
+            # # Compute squared temporal smoothness loss for left and right hand pose
+            # lhand_diff = torch.norm(smplx_inputs['lhand_pose'] - prev_frame_smplx_inputs['lhand_pose'], dim=-1) ** 2
+            # rhand_diff = torch.norm(smplx_inputs['rhand_pose'] - prev_frame_smplx_inputs['rhand_pose'], dim=-1) ** 2
+
+            # # Apply tolerance (only penalize beyond a certain threshold)
+            # lhand_loss = torch.mean(torch.clamp(weight * (lhand_diff - tolerance ** 2), min=0))
+            # rhand_loss = torch.mean(torch.clamp(weight * (rhand_diff - tolerance ** 2), min=0))
+
+            # # Combine both losses
+            # temporal_smoothness_loss = (lhand_loss + rhand_loss) / 2
+            # loss['temporal_smoothness_loss'] = temporal_smoothness_loss
+
+
         if not return_output:
             return loss, None
         else:

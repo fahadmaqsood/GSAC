@@ -10,68 +10,96 @@ import os.path as osp
 from utils.smpl_x import smpl_x
 from utils.flame import flame
 from glob import glob
-from pytorch3d.transforms import axis_angle_to_matrix, matrix_to_rotation_6d, rotation_6d_to_matrix, matrix_to_axis_angle
+from pytorch3d.transforms import (
+    axis_angle_to_matrix,
+    matrix_to_rotation_6d,
+    rotation_6d_to_matrix,
+    matrix_to_axis_angle
+)
 from base import Trainer
 from utils.vis import render_mesh
 from pytorch3d.io import save_ply
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--subject_id', type=str, dest='subject_id')
-
+    parser.add_argument('--subject_id', type=str, dest='subject_id', required=True)
+    parser.add_argument('--temp_weight', type=float, default=1, help='Temporal smoothness weight')
+    parser.add_argument('--hand_grad_scale', type=float, default=3, help='Hand gradient scaling')
     args = parser.parse_args()
-    assert args.subject_id, "Please set subject ID"
     return args
 
 def rotation_6d_to_axis_angle(x):
     return matrix_to_axis_angle(rotation_6d_to_matrix(x))
 
+def convert_to_6d(axis_angle_tensor):
+    """Convert axis-angle tensor to 6D rotation representation"""
+    rotation_matrix = axis_angle_to_matrix(axis_angle_tensor)
+    return matrix_to_rotation_6d(rotation_matrix)
+
 def main():
     args = parse_args()
     cfg.set_args(args.subject_id)
     
+    # Initialize trainer
     trainer = Trainer()
     trainer._make_batch_generator()
     trainer._make_model()
-    
-    # register initial flame parameters
+
+
+
+    # 2. Initialize flame parameters (6D format)
+    # --------------------------------------------------
     flame_params = {}
     for frame_idx in trainer.flame_params.keys():
         flame_params[frame_idx] = {}
         for key in ['root_pose', 'neck_pose', 'jaw_pose', 'leye_pose', 'reye_pose']:
-            flame_params[frame_idx][key] = nn.Parameter(matrix_to_rotation_6d(axis_angle_to_matrix(trainer.flame_params[frame_idx][key].cuda())))
+            original_param = trainer.flame_params[frame_idx][key].cuda()
+            param_6d = convert_to_6d(original_param)
+            flame_params[frame_idx][key] = nn.Parameter(param_6d)
         flame_params[frame_idx]['expr'] = nn.Parameter(trainer.flame_params[frame_idx]['expr'].cuda())
         flame_params[frame_idx]['trans'] = nn.Parameter(trainer.flame_params[frame_idx]['trans'].cuda())
+    
     flame_shape = nn.Parameter(trainer.flame_shape_param.float().cuda())
 
-    # register initial smplx parameters
+    # --------------------------------------------------
+    # 3. Initialize SMPLX parameters (6D format)
+    # --------------------------------------------------
     smplx_params = {}
     for frame_idx in trainer.smplx_params.keys():
         smplx_params[frame_idx] = {}
         for key in ['root_pose', 'body_pose', 'lhand_pose', 'rhand_pose']:
-            smplx_params[frame_idx][key] = nn.Parameter(matrix_to_rotation_6d(axis_angle_to_matrix(trainer.smplx_params[frame_idx][key].cuda())))
-        smplx_params[frame_idx]['jaw_pose'] = flame_params[frame_idx]['jaw_pose'] # share
-        smplx_params[frame_idx]['leye_pose'] = flame_params[frame_idx]['leye_pose'] # share
-        smplx_params[frame_idx]['reye_pose'] = flame_params[frame_idx]['reye_pose'] # share
-        smplx_params[frame_idx]['expr'] = flame_params[frame_idx]['expr'] # share
-        smplx_params[frame_idx]['trans'] = nn.Parameter(trainer.smplx_params[frame_idx]['trans'].cuda()) 
+            original_param = trainer.smplx_params[frame_idx][key].cuda()
+            param_6d = convert_to_6d(original_param)
+            smplx_params[frame_idx][key] = nn.Parameter(param_6d)
+        
+        # Shared parameters
+        smplx_params[frame_idx]['jaw_pose'] = flame_params[frame_idx]['jaw_pose']
+        smplx_params[frame_idx]['leye_pose'] = flame_params[frame_idx]['leye_pose']
+        smplx_params[frame_idx]['reye_pose'] = flame_params[frame_idx]['reye_pose']
+        smplx_params[frame_idx]['expr'] = flame_params[frame_idx]['expr']
+        smplx_params[frame_idx]['trans'] = nn.Parameter(trainer.smplx_params[frame_idx]['trans'].cuda())
+
+    # Initialize shape and offsets
     smplx_shape = nn.Parameter(torch.zeros((smpl_x.shape_param_dim)).float().cuda())
-    face_offset = nn.Parameter(torch.zeros((flame.vertex_num,3)).float().cuda())
-    joint_offset = nn.Parameter(torch.zeros((smpl_x.joint['num'],3)).float().cuda())
-    locator_offset = nn.Parameter(torch.zeros((smpl_x.joint['num'],3)).float().cuda())
-    
+    face_offset = nn.Parameter(torch.zeros((flame.vertex_num, 3)).float().cuda())
+    joint_offset = nn.Parameter(torch.zeros((smpl_x.joint['num'], 3)).float().cuda())
+    locator_offset = nn.Parameter(torch.zeros((smpl_x.joint['num'], 3)).float().cuda())
+
+    # --------------------------------------------------
+    # 4. Main training loop
+    # --------------------------------------------------
     for epoch in range(cfg.end_epoch):
         cfg.set_itr_opt_num(epoch)
 
         for itr_data, data in enumerate(trainer.batch_generator):
             batch_size = data['img_orig'].shape[0]
-
+     
+         
             for itr_opt in range(cfg.itr_opt_num):
                 cfg.set_stage(epoch, itr_opt)
 
-                # optimizer
+                # Optimizer configuration
                 if (epoch == 0) and (itr_opt == 0):
-                    # smplx and flame root pose and translatioin
                     optimizable_params = []
                     for frame_idx in data['frame_idx']:
                         for key in ['root_pose', 'trans']:
@@ -80,57 +108,146 @@ def main():
                             optimizable_params.append(flame_params[int(frame_idx)][key])
                     trainer.get_optimizer(optimizable_params)
                 elif ((epoch == 0) and (itr_opt == cfg.stage_itr[0])) or ((epoch > 0) and (itr_opt == 0)):
-                    # all parameters
                     if epoch == (cfg.end_epoch - 1):
-                        optimizable_params = [] # do not optimize shared parameters to make per-frame parameters consistent with the shared ones
+                        optimizable_params = []
                     else:
-                        optimizable_params = [smplx_shape, flame_shape, face_offset, joint_offset, locator_offset] # all shared parameters
+                        optimizable_params = [
+                            smplx_shape, flame_shape, 
+                            face_offset, joint_offset, locator_offset
+                        ]
                     for frame_idx in data['frame_idx']:
-                        for key in ['root_pose', 'body_pose', 'lhand_pose', 'rhand_pose', 'trans']: # jaw_pose, leye_pose, reye_pose, and expr is provided by flame_params
+                        for key in ['root_pose', 'body_pose', 'lhand_pose', 'rhand_pose', 'trans']:
                             optimizable_params.append(smplx_params[int(frame_idx)][key])
                         for key in ['root_pose', 'neck_pose', 'jaw_pose', 'leye_pose', 'reye_pose', 'expr', 'trans']:
                             optimizable_params.append(flame_params[int(frame_idx)][key])
                     trainer.get_optimizer(optimizable_params)
 
-                # inputs
-                smplx_inputs = {'shape': [smplx_shape for _ in range(batch_size)], 'face_offset': [face_offset for _ in range(batch_size)], 'joint_offset': [joint_offset for _ in range(batch_size)], 'locator_offset': [locator_offset for _ in range(batch_size)]}
+
+                # Prepare inputs
+                smplx_inputs = {
+                    'shape': [smplx_shape for _ in range(batch_size)],
+                    'face_offset': [face_offset for _ in range(batch_size)],
+                    'joint_offset': [joint_offset for _ in range(batch_size)],
+                    'locator_offset': [locator_offset for _ in range(batch_size)]
+                }
+                
                 flame_inputs = {'shape': [flame_shape for _ in range(batch_size)]}
+                
+                # Build parameter stacks
                 for frame_idx in data['frame_idx']:
-                    for key in ['root_pose', 'body_pose', 'jaw_pose', 'leye_pose', 'reye_pose', 'lhand_pose', 'rhand_pose', 'expr', 'trans']:
+                    for key in ['root_pose', 'body_pose', 'jaw_pose', 'leye_pose', 
+                              'reye_pose', 'lhand_pose', 'rhand_pose', 'expr', 'trans']:
                         if key not in smplx_inputs:
                             smplx_inputs[key] = [smplx_params[int(frame_idx)][key]]
                         else:
                             smplx_inputs[key].append(smplx_params[int(frame_idx)][key])
-                    for key in ['root_pose', 'neck_pose', 'jaw_pose', 'leye_pose', 'reye_pose', 'expr', 'trans']:
+                    
+                    for key in ['root_pose', 'neck_pose', 'jaw_pose', 'leye_pose', 
+                               'reye_pose', 'expr', 'trans']:
                         if key not in flame_inputs:
                             flame_inputs[key] = [flame_params[int(frame_idx)][key]]
                         else:
                             flame_inputs[key].append(flame_params[int(frame_idx)][key])
-                for key in smplx_inputs.keys():
+
+                # Stack parameters
+                for key in smplx_inputs:
                     smplx_inputs[key] = torch.stack(smplx_inputs[key])
-                for key in flame_inputs.keys():
+                for key in flame_inputs:
                     flame_inputs[key] = torch.stack(flame_inputs[key])
 
-                # forwrad
+                if (epoch == 0) and (itr_opt == 0):
+                
+                    # Store previous parameters as detached clones
+                    prev_step_smplx_params = {
+                        frame_idx: {
+                            key: value.detach().clone() for key, value in smplx_params[frame_idx].items()
+                        }
+                        for frame_idx in smplx_params
+                    }
+
+                # Initialize prev_smplx_inputs dictionary
+                prev_frame_smplx_inputs = {}
+
+                # Build parameter stacks using prev_smplx_params
+                for frame_idx in data['frame_idx']:
+                    if frame_idx == 0 :
+                            frame_idx = 0
+                    else:
+                            frame_idx = frame_idx-1
+                    for key in ['root_pose', 'body_pose', 'jaw_pose', 'leye_pose', 
+                                    'reye_pose', 'lhand_pose', 'rhand_pose', 'expr', 'trans']:
+                        if key not in  prev_frame_smplx_inputs:
+                                prev_frame_smplx_inputs[key] = [smplx_params[int(frame_idx)][key]]
+                        else:
+                                prev_frame_smplx_inputs[key].append(smplx_params[int(frame_idx)][key])
+
+                # Stack parameters
+                for key in  prev_frame_smplx_inputs:
+                    prev_frame_smplx_inputs[key] = torch.stack( prev_frame_smplx_inputs[key])
+
+
+
+                # Forward pass
                 trainer.set_lr(itr_opt)
                 trainer.optimizer.zero_grad()
-                loss, out = trainer.model(smplx_inputs, flame_inputs, data, return_output=((epoch==cfg.end_epoch-1) and (itr_opt==cfg.itr_opt_num-1)))
-                loss = {k:loss[k].mean() for k in loss}
+                # print('ftttt')
+                # print(smplx_inputs['lhand_pose'].shape)
+                # print(smplx_inputs['rhand_pose'].shape)
+                # print(prev_frame_smplx_inputs['lhand_pose'].shape)
+                # print(prev_frame_smplx_inputs['rhand_pose'].shape)
+                # print('ftttt')
+                # lhand_diff = torch.norm(smplx_inputs['lhand_pose'] - prev_frame_smplx_inputs['lhand_pose'], dim=-1)
+                # rhand_diff = torch.norm(smplx_inputs['rhand_pose'] - prev_frame_smplx_inputs['rhand_pose'], dim=-1)
+                # print(torch.mean(torch.clamp(lhand_diff - 0.1, min=0)))
+
+                loss, out = trainer.model(
+                    prev_frame_smplx_inputs,
+                    smplx_inputs, 
+                    flame_inputs, 
+                    data, 
+                    return_output=((epoch == cfg.end_epoch-1) and (itr_opt == cfg.itr_opt_num-1)) )
                 
-                # backward
-                sum(loss[k] for k in loss).backward()
+                # Combine losses
+                total_loss = sum(loss[k].mean() for k in loss)
+
+
+
+
+                # Perform optimization
+                total_loss.backward()
                 trainer.optimizer.step()
-                print(cfg.result_dir)
 
-                # log
+                # Store a copy of SMPL-X parameters after optimizer.step()
+                prev_step_smplx_params = {
+                    frame_idx: {
+                        key: value.detach().clone() for key, value in smplx_params[frame_idx].items()
+                    }
+                    for frame_idx in smplx_params
+                }
+
+                # Update previous parameters
+                # prev_smplx_params[current_frame_idx] = {
+                #     k: v.detach().clone()
+                #     for k, v in smplx_params[current_frame_idx].items()
+                #     if k in ['root_pose', 'body_pose', 'lhand_pose', 'rhand_pose']
+                # }
+                # Parameter update section
+      
+                # print(abcc)
+                # Logging
                 screen = [
-                    'epoch %d/%d itr_data %d/%d itr_opt %d/%d:' % (epoch, cfg.end_epoch, itr_data, trainer.itr_per_epoch, itr_opt, cfg.itr_opt_num),
-                    'lr: %g' % (trainer.get_lr()),
-                    ]
-                screen += ['%s: %.4f' % ('loss_' + k, v.detach()) for k,v in loss.items()]
-                print(screen)
+                    f'Epoch {epoch}/{cfg.end_epoch} Iter {itr_data}/{trainer.itr_per_epoch} Opt {itr_opt}/{cfg.itr_opt_num}',
+                    f'LR: {trainer.get_lr():.2e}',
+                    f'Total Loss: {total_loss.item():.8f}',
+                ]
+                print('\n'.join(screen))
+                # screen = [
+                #     f'epoch {epoch}/{cfg.end_epoch} itr_data {itr_data}/{trainer.itr_per_epoch} itr_opt {itr_opt}/{cfg.itr_opt_num}:',
+                #     f'lr: {trainer.get_lr():g}',
+                # ]
+                # # screen += [f'{k}: {v.item():.4f}' for k, v in loss_dict.items()]
+                # print('\n'.join(screen))
 
-            # save
             if epoch != (cfg.end_epoch-1):
                 continue
             save_root_path = osp.join(cfg.result_dir, 'smplx_optimized')

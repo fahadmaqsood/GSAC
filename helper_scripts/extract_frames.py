@@ -2,7 +2,7 @@ import subprocess
 import os
 import glob
 
-subject_id = 'rd_black'
+subject_id = 'subject_id'
 
 video_path = "../Data/" + subject_id + "/input.MOV"  
 
