@@ -110,3 +110,24 @@ ROOT
 The visual results will be available in Data/{SUBJECT}/Result/.
 
 To visualize the avatar and animate it, please move state_dict.json and avatar.ply to training_asserts/ in Unity Editor package.
+
+
+
+## IMPORTANT NOTICE
+If you create an avatar of a person using this pipeline, please obtain permission from the individual before using it. If you use our pipeline, you AGREE  ALL use complies with legal and ethical standards.
+
+## Citation:
+
+If you find our work useful, please cite:
+
+~~~
+@misc{zhang2025gsacleveraginggaussiansplatting,
+      title={GSAC: Leveraging Gaussian Splatting for Photorealistic Avatar Creation with Unity Integration}, 
+      author={Rendong Zhang and Alexandra Watkins and Nilanjan Sarkar},
+      year={2025},
+      eprint={2504.12999},
+      archivePrefix={arXiv},
+      primaryClass={cs.GR},
+      url={https://arxiv.org/abs/2504.12999}, 
+}
+~~~
