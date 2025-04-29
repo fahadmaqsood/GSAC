@@ -109,9 +109,7 @@ ROOT
 ## Results
 The visual results will be available in Data/{SUBJECT}/Result/.
 
-To visualize the avatar and animate it, please move state_dict.json and avatar.ply to training_asserts/ in Unity Editor package.
-
-
+To visualize the avatar and animate it, please move state_dict.json and avatar.ply to training_asserts/ in [Unity Editor package](https://github.com/VU-RASL/UnityGaussianSplatting).
 
 ## IMPORTANT NOTICE
 If you create an avatar of a person using this pipeline, please obtain permission from the individual before using it. If you use our pipeline, you AGREE  ALL use complies with legal and ethical standards.
