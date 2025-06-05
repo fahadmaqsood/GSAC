@@ -11,6 +11,8 @@ dependencies:
   - omegaconf
   - pillow
   - pyrender
+  - cryptography >= 42.0.0
+  - pyOpenSSL >= 23.2.0
 
   - python=3.10
   - pip
