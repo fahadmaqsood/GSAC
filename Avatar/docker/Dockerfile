@@ -111,7 +111,17 @@ RUN pip install --upgrade pip
 
 RUN echo 112
 COPY docker/environment.yml /home/$USERNAME/environment.yml
-RUN conda env create -f /home/$USERNAME/environment.yml
+# RUN conda env create -f /home/$USERNAME/environment.yml
+
+RUN conda install -y -n base -c conda-forge mamba
+
+RUN mamba install -n base \
+    'cryptography>=42.0.0' \
+    'pyOpenSSL>=23.2.0' \
+    --yes --force-reinstall
+    
+RUN mamba env create -f /home/$USERNAME/environment.yml --verbose
+
 
 RUN echo "source activate gsac" > ~/.bashrc
 ENV PATH /opt/conda/envs/gsac/bin:$PATH
