@@ -26,7 +26,7 @@ if [ ! -d "tools/" ]; then
     rm /tmp/human_model_files.tar
 
     wget -O /tmp/tools.zip \
-        "https://huggingface.co/RendongZhang/GSAC-Dependencies/resolve/main/tools.tar"
+        "https://huggingface.co/RendongZhang/GSAC-Dependencies/resolve/main/tools.zip"
     unzip /tmp/tools.zip -d .
     rm /tmp/tools.zip
 
