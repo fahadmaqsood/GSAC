@@ -11,8 +11,6 @@ pip install git+https://github.com/facebookresearch/pytorch3d.git
 
 cd ${GSAC_DIR}/Preprocessor
 
-mkdir -p tools/
-mkdir -p common/utils/
 
 if [ ! -d "common/utils" ]; then
     echo "Error: /common/utils directory does not exist."
