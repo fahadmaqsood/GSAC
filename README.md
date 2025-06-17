@@ -7,7 +7,7 @@ Splatting Avatar Editor, offering a user-friendly environment for VR/AR applicat
 ## Install
 Clone the repo
 ~~~
-git clone https://github.com/VU-RASL/GSAC.git
+git clone https://github.com/fahadmaqsood/GSAC.git
 ~~~
 cd to the repo, then run
 ~~~
