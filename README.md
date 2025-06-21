@@ -7,11 +7,17 @@ Splatting Avatar Editor, offering a user-friendly environment for VR/AR applicat
 ## Install
 Clone the repo
 ~~~
+cd ~/Desktop/
 git clone https://github.com/fahadmaqsood/GSAC.git
 ~~~
 cd to the repo, then run
 ~~~
 bash Avatar/docker/build.sh
+bash Avatar/docker/run.sh
+~~~
+Then open this container's bash terminal in new terminal window and run the following commands:
+~~~
+cd /mounted/home/YOUR_USERNAME/Desktop/GSAC/
 bash post-build.sh
 pip install -r Avatar/docker/extra_require.txt
 ~~~
